@@ -199,6 +199,12 @@
     </Compile>
     <AppDesigner Include="Properties\" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ContactDownloader\ContactDownloader.csproj">
+      <Project>{114A8864-9F71-4125-92CE-95208F0A6184}</Project>
+      <Name>ContactDownloader</Name>
+    </ProjectReference>
+  </ItemGroup>
   <!-- Include the build rules for a C# project. -->
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- Include additional build rules for an Office application add-in. -->
