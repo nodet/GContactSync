@@ -12,7 +12,20 @@ namespace GContactSync
     {
         private void ThisAddIn_Startup(object sender, System.EventArgs e)
         {
-            GetAllNodetFromGoogle();
+            try
+            {
+                GoogleContactDownloader gcd = new GoogleContactDownloader();
+                gcd.Authenticate("xavier.nodet@gmail.com", "");
+                OContactManager ocm = new OContactManager(this.Application);
+                ContactMerger.Merge(gcd, ocm,
+                                    gcd.GetContacts().Where(c => c.FullName != null && c.FullName.Contains("Marcy")),
+                                    ocm.GetContacts().Where(c => c.FullName != null && c.FullName.Contains("Marcy")));
+            }
+            catch (System.Exception ex)
+            {
+                System.Windows.Forms.MessageBox.Show("Exception: " + ex);
+                throw;
+            }
         }
         private void ThisAddIn_Shutdown(object sender, System.EventArgs e)
         {
@@ -51,30 +64,6 @@ namespace GContactSync
         
         #endregion
 
-
-
-        private void GetAllNodetFromGoogle()
-        {
-            GoogleContactDownloader gcd = new GoogleContactDownloader();
-            gcd.Authenticate("xavier.nodet@gmail.com", "");
-            IEnumerable<IContact> list = gcd.GetContacts();
-            //System.Windows.Forms.MessageBox.Show("You have " + list.Count() + " contacts.");
-            list = list.Where(c => c.FullName != null && c.FullName.Contains("Nodet"));
-            //System.Windows.Forms.MessageBox.Show("You have " + list.Count() +
-            //    " contacts with last names that contain "
-            //    + "Nodet" + ".");
-            foreach (IContact contact in list)
-            {
-                OContact oc = new OContact(this.Application, contact.FullName);
-                foreach (string mail in contact.Emails)
-                {
-                    oc.addMail(mail);
-                }
-                oc.Update();
-            }
-        }
-
-    
     }
 
 
@@ -88,12 +77,42 @@ namespace GContactSync
             _item = (Outlook.ContactItem) app.CreateItem(Outlook.OlItemType.olContactItem);
             _item.FullName = name;
         }
+        public OContact(Outlook.ContactItem item) {
+            _item = item;
+        }
+        public OContact(Outlook.Application app, IContact other) {
+            _item = (Outlook.ContactItem)app.CreateItem(Outlook.OlItemType.olContactItem);
+            MergeFrom(other);
+        }
 
         public override string FullName { get { return _item.FullName; } set { _item.FullName = value; } }
         
-        public override IEnumerable<string> Emails { get { throw new NotImplementedException(); } }
+        public override IEnumerable<string> Emails { 
+            get {
+                List<string> l = new List<string>();
+                if (!string.IsNullOrEmpty(_item.Email1Address))
+                {
+                    l.Add(_item.Email1Address);
+                }
+                if (!string.IsNullOrEmpty(_item.Email2Address))
+                {
+                    l.Add(_item.Email2Address);
+                }
+                if (!string.IsNullOrEmpty(_item.Email3Address))
+                {
+                    l.Add(_item.Email3Address);
+                }
+                return l;
+            } 
+        }
+
         public override bool addMail(string mail)
         {
+            if (mail.Equals(_item.Email1Address) || mail.Equals(_item.Email2Address) || mail.Equals(_item.Email3Address))
+            {
+                // Already exists
+                return false;
+            }
             if (string.IsNullOrEmpty(_item.Email1Address))
             {
                 _item.Email1Address = mail;
@@ -108,6 +127,7 @@ namespace GContactSync
             }
             else
             {
+                // No free slot
                 return false;
             }
             return true;
@@ -121,6 +141,34 @@ namespace GContactSync
 
     }
 
+    public class OContactManager : IContactManager
+    {
+        private Outlook.Application _application;
+        public OContactManager(Outlook.Application app) {
+            _application = app;
+        }
+
+        public bool Authenticate(string user, string pass) {
+            return true;
+        }
+
+        public IEnumerable<IContact> GetContacts() {
+            Outlook.MAPIFolder folderContacts = _application.ActiveExplorer().Session.
+                GetDefaultFolder(Outlook.OlDefaultFolders.olFolderContacts);
+            Outlook.Items searchFolder = folderContacts.Items;
+            List<IContact> list = new List<IContact>();
+            foreach (Outlook.ContactItem foundContact in searchFolder)
+            {
+                OContact oc = new OContact(foundContact);
+                list.Add(oc);
+            }
+            return list;
+        }
+
+        public IContact NewContact(IContact other) {
+            return new OContact(_application, other);
+        }
+    }
 
 
 

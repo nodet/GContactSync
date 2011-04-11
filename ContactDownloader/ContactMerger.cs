@@ -8,15 +8,42 @@ namespace GContactSync
 {
     public class ContactMerger
     {
-        public static void Merge(IContactManager m1, IContactManager m2)
+        public static void Merge(IContactManager m1, IContactManager m2,
+                                 IEnumerable<IContact> l1, IEnumerable<IContact> l2)
         {
-            foreach (IContact c in m1.GetContacts())
+            foreach (IContact c in l1)
             {
-                foreach (IContact oc in m2.GetContacts())
+                bool foundMerge = false;
+                foreach (IContact oc in l2)
                 {
                     if (!c.IsSameAs(oc)) continue;
-                    c.MergeFrom(oc);
-                    oc.MergeFrom(c);
+
+                    foundMerge = true;
+                    if (c.MergeFrom(oc))
+                    {
+                        c.Update();
+                    }
+                    if (oc.MergeFrom(c))
+                    {
+                        oc.Update();
+                    }
+                }
+                if (!foundMerge)
+                {
+                    m2.NewContact(c).Update();
+                }
+            }
+
+            foreach(IContact oc in l2) {
+                bool foundMerge = false;
+                foreach (IContact c in l1)
+                {
+                    if (!c.IsSameAs(oc)) continue;
+                    foundMerge = true;
+                }
+                if (!foundMerge)
+                {
+                    m1.NewContact(oc).Update();
                 }
             }
         }

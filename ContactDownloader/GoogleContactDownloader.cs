@@ -52,5 +52,87 @@ namespace GContactSync
             //}
             return list;
         }
+
+        public IContact NewContact(IContact other)
+        {
+            return new GContact(rs, other);
+        }
     }
+
+
+    public class GContact: ContactBase
+    {
+        private RequestSettings _rs;
+        private Google.Contacts.Contact _item;
+        //private bool _alreadyExistsOnGoogle = false;
+
+        public GContact(RequestSettings rs, IContact other)
+        {
+            _rs = rs;
+            _item = new Google.Contacts.Contact();
+            MergeFrom(other);
+        }
+
+        public override string FullName { 
+            get {
+                if (_item.Name != null)
+                {
+                    return _item.Name.FullName;
+                } 
+                else
+                {
+                    return "";
+                }
+            } 
+            set {
+                if (_item.Name == null)
+                {
+                    _item.Name = new Name();
+                }
+                _item.Name.FullName = value; 
+            } 
+        }
+        
+        public override IEnumerable<string> Emails { 
+            get { 
+                List<string> l = new List<string>();
+                foreach (EMail mail in _item.Emails)
+                {
+                    l.Add(mail.Address);
+                }
+                return l;
+            } 
+        }
+        public override bool addMail(string mail)
+        {
+            System.Windows.Forms.MessageBox.Show("Adding " + mail +
+                " as an email address for "
+                + FullName + ".");
+            if (_item.Emails.Where(m => m.Address.Equals(mail)).Count() > 0)
+            {
+                return false;
+            }
+            _item.Emails.Add(new EMail(mail));
+
+            return true;
+        }
+
+        public override void Update()
+        {
+            ContactsRequest cr = new ContactsRequest(_rs);
+            //if (alreadyExistsOnGoogle)
+            //{
+            //    cr.Update(_item);
+            //} 
+            //else
+            //{
+                Uri feedUri = new Uri(ContactsQuery.CreateContactsUri("default"));
+                cr.Insert(feedUri, _item);
+            //}
+        }
+
+
+    }
+
+
 }

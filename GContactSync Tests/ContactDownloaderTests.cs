@@ -5,6 +5,11 @@ using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using GContactSync;
 
+using Google.GData.Client;
+using Google.GData.Extensions;
+using Google.GData.Contacts;
+using Google.Contacts;
+
 namespace GContactSync_Tests
 {
     /// <summary>
@@ -91,7 +96,7 @@ namespace GContactSync_Tests
             {
                 GetContactsImpl = () => { 
                     var l = new List<IContact>();
-                    l.Add(new Contact("John Doe"));
+                    l.Add(new GContactSync.Contact("John Doe"));
                     return l;
                 }
 
@@ -128,6 +133,16 @@ namespace GContactSync_Tests
                 }
             }
             System.Windows.Forms.MessageBox.Show("You have " + nbContact + " contacts totalling " + nbMails + " email addresses.");
+        }
+
+
+        //[TestMethod]
+        public void TestCreateAGoogleContact()
+        {
+            RequestSettings rs = new RequestSettings("GContactSync", "xavier.nodet@gmail.com", "");
+            GContactSync.Contact c = new GContactSync.Contact("John Doe");
+            GContact gc = new GContact(rs, c);
+            gc.Update();
         }
 
 

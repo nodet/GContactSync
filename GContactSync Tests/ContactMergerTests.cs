@@ -63,7 +63,7 @@ namespace GContactSync_Tests
 
 
         [TestMethod]
-        public void TestMerge()
+        public void TestMergeBothWays()
         {
             Contact c1 = new Contact("John Doe", "j@doe.com");
             IContactManager m1 = new MockContactManager
@@ -91,11 +91,60 @@ namespace GContactSync_Tests
             Assert.IsFalse(c2.Emails.Contains("j@doe.com"));
             Assert.IsFalse(c1.Emails.Contains("john@doe.com"));
             Assert.IsTrue (c2.Emails.Contains("john@doe.com"));
-            ContactMerger.Merge(m1, m2);
+            ContactMerger.Merge(m1, m2, m1.GetContacts(), m2.GetContacts());
             Assert.IsTrue(c1.Emails.Contains("j@doe.com"));
             Assert.IsTrue(c2.Emails.Contains("j@doe.com"));
             Assert.IsTrue(c1.Emails.Contains("john@doe.com"));
             Assert.IsTrue(c2.Emails.Contains("john@doe.com"));
         }
+
+        [TestMethod]
+        public void TestMergeOneWay()
+        {
+            List<IContact> l1 = new List<IContact>();
+            Contact c1 = new Contact("John Doe", "j@doe.com");
+            l1.Add(c1);
+            List<IContact> l2 = new List<IContact>();
+
+            IContactManager m1 = new MockContactManager {
+                GetContactsImpl = () => { return l1; }
+            };
+            IContactManager m2 = new MockContactManager
+            {
+                GetContactsImpl = () => { return l2; }
+            };
+            ContactMerger.Merge(m1, m2, m1.GetContacts(), m2.GetContacts());
+
+            Assert.AreEqual(l2.Count(), 1);
+            IContact c2 = l2.ElementAt(0);
+            Assert.AreEqual(c2.FullName, "John Doe");
+            Assert.IsTrue(c2.Emails.Contains("j@doe.com"));
+        }
+
+
+        [TestMethod]
+        public void TestMergeTheOtherWay()
+        {
+            List<IContact> l1 = new List<IContact>();
+            List<IContact> l2 = new List<IContact>();
+            Contact c2 = new Contact("John Doe", "j@doe.com");
+            l2.Add(c2);
+
+            IContactManager m1 = new MockContactManager
+            {
+                GetContactsImpl = () => { return l1; }
+            };
+            IContactManager m2 = new MockContactManager
+            {
+                GetContactsImpl = () => { return l2; }
+            };
+            ContactMerger.Merge(m1, m2, m1.GetContacts(), m2.GetContacts());
+
+            Assert.AreEqual(l1.Count(), 1);
+            IContact c1 = l1.ElementAt(0);
+            Assert.AreEqual(c1.FullName, "John Doe");
+            Assert.IsTrue(c1.Emails.Contains("j@doe.com"));
+        }
+
     }
 }

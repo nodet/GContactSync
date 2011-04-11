@@ -44,9 +44,12 @@ namespace GContactSync
                 FullName = other.FullName;
                 didSomething = true;
             }
-            foreach (string email in other.Emails)
+            if (other.Emails != null)
             {
-                didSomething |= addMail(email);
+                foreach (string email in other.Emails)
+                {
+                    didSomething |= addMail(email);
+                }
             }
             return didSomething;
         }

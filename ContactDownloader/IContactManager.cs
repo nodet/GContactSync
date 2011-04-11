@@ -10,12 +10,13 @@ namespace GContactSync
     {
         bool Authenticate(string user, string pass);
         IEnumerable<IContact> GetContacts();
+        IContact NewContact(IContact other);
     }
 
     public class MockContactManager : IContactManager 
     {
         public Func<String, String, Boolean> AuthenticateImpl { get; set; }
-        public Func<IEnumerable<IContact>> GetContactsImpl { get; set; }
+        public Func<List<IContact>> GetContactsImpl { get; set; }
          
         public Boolean Authenticate(string user, string pass) 
         {
@@ -37,6 +38,13 @@ namespace GContactSync
             }
 
             return GetContactsImpl();
+        }
+
+        public IContact NewContact(IContact other)
+        {
+            IContact newC = new Contact(other);
+            GetContactsImpl().Add(newC);
+            return newC;
         }
 
     }
