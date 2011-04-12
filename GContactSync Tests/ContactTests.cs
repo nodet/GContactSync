@@ -163,5 +163,31 @@ namespace GContactSync_Tests
             Assert.IsTrue(c2.Emails.Contains("j@doe.com"));
         }
     
+        [TestMethod]
+        public void TestAnEmptyContactHasNoInformation()
+        {
+            IContact c1 = new Contact("");
+            Assert.IsFalse(c1.ContainsSomeInformation());
+        }
+        [TestMethod]
+        public void TestAContactWithANameHasSomeInformation()
+        {
+            IContact c1 = new Contact("John Doe");
+            Assert.IsTrue(c1.ContainsSomeInformation());
+        }
+        [TestMethod]
+        public void TestAContactWithAMailHasSomeInformation()
+        {
+            IContact c1 = new Contact("", "john@doe.com");
+            Assert.IsTrue(c1.ContainsSomeInformation());
+        }
+        [TestMethod]
+        public void TestInsertingEmptyEmailAddressIsNoop()
+        {
+            IContact c1 = new Contact("John Doe");
+            Assert.IsFalse(c1.addMail(""));
+            Assert.AreEqual(c1.Emails.Count(), 0);
+        }
+
     }
 }

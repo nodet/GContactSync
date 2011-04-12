@@ -13,18 +13,28 @@ namespace GContactSync
     {
         //private ContactsService service;
         private RequestSettings rs = null;
+        private string _user;
+        private string _pass;
 
         public bool Authenticate(string user, string pass) {
+            _user = user;
+            _pass = pass;
+            return Authenticate();
+        }
+
+        public bool Authenticate()
+        {
             //ContactsQuery query = new ContactsQuery(ContactsQuery.CreateContactsUri(user));
             //service = new ContactsService("unittests");
 
-            //service.Credentials = new GDataCredentials(user, pass);
+            //service.Credentials = new GDataCredentials(_user, _pass);
 
-            rs = new RequestSettings("GContactSync", user, pass);
+            rs = new RequestSettings("GContactSync", _user, _pass);
             // AutoPaging results in automatic paging in order to retrieve all contacts
             rs.AutoPaging = true;
             return true;
         }
+
         public IEnumerable<IContact> GetContacts()
         {
             //ContactsQuery query = new ContactsQuery(ContactsQuery.CreateContactsUri(""));
@@ -37,16 +47,7 @@ namespace GContactSync
             //{
                 foreach (Google.Contacts.Contact gContact in feed.Entries)
                 {
-                    Name n = gContact.Name;
-                    string ns = "";
-                    if (n != null) {
-                        ns = n.FullName;
-                    }
-                    IContact c = new Contact(ns);
-                    foreach (Google.GData.Extensions.EMail email in gContact.Emails)
-                    {
-                        c.addMail(email.Address);
-                    }
+                    IContact c = new GContact(this, rs, gContact);
                     list.Add(c);
                 }
             //}
@@ -55,7 +56,7 @@ namespace GContactSync
 
         public IContact NewContact(IContact other)
         {
-            return new GContact(rs, other);
+            return new GContact(this, rs, other);
         }
     }
 
@@ -63,14 +64,25 @@ namespace GContactSync
     public class GContact: ContactBase
     {
         private RequestSettings _rs;
+        private GoogleContactDownloader _gcd;
         private Google.Contacts.Contact _item;
-        //private bool _alreadyExistsOnGoogle = false;
+        private bool _alreadyExistsOnGoogle = false;
 
-        public GContact(RequestSettings rs, IContact other)
+        public GContact(GoogleContactDownloader gcd, RequestSettings rs, IContact other)
         {
+            //System.Windows.Forms.MessageBox.Show("Creating a new Google contact for " + other.FullName + " in memory");
+            _gcd = gcd;
             _rs = rs;
             _item = new Google.Contacts.Contact();
+            _item.AtomEntry = new Google.GData.Contacts.ContactEntry();
             MergeFrom(other);
+        }
+        public GContact(GoogleContactDownloader gcd, RequestSettings rs, Google.Contacts.Contact gContact)
+        {
+            _gcd = gcd;
+            _rs = rs;
+            _item = gContact;
+            _alreadyExistsOnGoogle = true;
         }
 
         public override string FullName { 
@@ -103,32 +115,46 @@ namespace GContactSync
                 return l;
             } 
         }
-        public override bool addMail(string mail)
+        protected override bool internal_addMail(string mail)
         {
-            System.Windows.Forms.MessageBox.Show("Adding " + mail +
-                " as an email address for "
-                + FullName + ".");
             if (_item.Emails.Where(m => m.Address.Equals(mail)).Count() > 0)
             {
                 return false;
             }
-            _item.Emails.Add(new EMail(mail));
-
+            //System.Windows.Forms.MessageBox.Show("Adding " + mail + " as an email address for " + FullName + ".");
+            EMail theMail = new EMail(mail, ContactsRelationships.IsOther);
+            if (_item.Emails.Count() == 0)
+            {
+                theMail.Primary = true;
+            }
+            _item.Emails.Add(theMail);
             return true;
         }
 
         public override void Update()
         {
             ContactsRequest cr = new ContactsRequest(_rs);
-            //if (alreadyExistsOnGoogle)
-            //{
-            //    cr.Update(_item);
-            //} 
-            //else
-            //{
+            if (_alreadyExistsOnGoogle)
+            {
+                //System.Windows.Forms.MessageBox.Show("Updating " + FullName + " on Google");
+                cr.Update(_item);
+            } 
+            else
+            {
+                //System.Windows.Forms.MessageBox.Show("Inserting " + FullName + " into Google");
+
+                //ContactsService service = new ContactsService("GContactSync");
+                //ContactsQuery q = new ContactsQuery(ContactsQuery.CreateContactsUri("xavier.nodet@gmail.com"));
+                //ContactsFeed cf = service.Query(q);
+                ////ContactEntry entry = ObjectModelHelper.CreateContactEntry(1);
+                //ContactEntry insertedEntry = cf.Insert(_item.ContactEntry);
+
                 Uri feedUri = new Uri(ContactsQuery.CreateContactsUri("default"));
                 cr.Insert(feedUri, _item);
-            //}
+
+                //_gcd.Authenticate();
+                //cr.Insert(_item);
+            }
         }
 
 

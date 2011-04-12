@@ -10,6 +10,7 @@ namespace GContactSync
         public abstract string FullName { get; set; }
         public abstract IEnumerable<string> Emails {get;}
         public abstract bool addMail(string mail);
+        protected abstract bool internal_addMail(string mail);
 
         /// <summary>
         /// Returns true if the two contacts should be considered to represent the same entity (and thus be merged)
@@ -26,15 +27,29 @@ namespace GContactSync
         public abstract bool MergeFrom(IContact other);
 
         /// <summary>
+        /// Returns true if and only if the contact contains at least a name or an email address
+        /// </summary>
+        /// <returns></returns>
+        public abstract bool ContainsSomeInformation();
+
+        /// <summary>
         /// Saves the contact information back to the store
         /// </summary>
         public abstract void Update();
     }
 
     public abstract class ContactBase : IContact {
+        public override bool addMail(string mail)
+        {
+            if (string.IsNullOrEmpty(mail))
+            {
+                return false;
+            }
+            return internal_addMail(mail);
+        }
         public override bool IsSameAs(IContact other)
         {
-            return FullName.Equals(other.FullName) || Emails.Intersect(other.Emails).GetEnumerator().MoveNext();
+            return (FullName != null && FullName.Equals(other.FullName)) || Emails.Intersect(other.Emails).GetEnumerator().MoveNext();
         }
         public override bool MergeFrom(IContact other)
         {
@@ -52,6 +67,10 @@ namespace GContactSync
                 }
             }
             return didSomething;
+        }
+        public override bool ContainsSomeInformation()
+        {
+            return !string.IsNullOrEmpty(FullName) || (Emails.Count() > 0);
         }
     }
 
@@ -81,7 +100,7 @@ namespace GContactSync
             }
         }
 
-        public override bool addMail(string mail)
+        protected override bool internal_addMail(string mail)
         {
             return EmailList.Add(mail);
         }

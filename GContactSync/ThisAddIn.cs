@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
+using System.Windows.Forms;
 using Outlook = Microsoft.Office.Interop.Outlook;
 using Office = Microsoft.Office.Core;
 
@@ -14,18 +15,29 @@ namespace GContactSync
         {
             try
             {
-                GoogleContactDownloader gcd = new GoogleContactDownloader();
-                gcd.Authenticate("xavier.nodet@gmail.com", "");
-                OContactManager ocm = new OContactManager(this.Application);
-                ContactMerger.Merge(gcd, ocm,
-                                    gcd.GetContacts().Where(c => c.FullName != null && c.FullName.Contains("Marcy")),
-                                    ocm.GetContacts().Where(c => c.FullName != null && c.FullName.Contains("Marcy")));
+                GetAllContactsAndMergeThem();
             }
             catch (System.Exception ex)
             {
                 System.Windows.Forms.MessageBox.Show("Exception: " + ex);
-                throw;
+                // Not re-throwing: it seems to disable the addin
             }
+        }
+
+        private void GetAllContactsAndMergeThem()
+        {
+            UserCredentials f = new UserCredentials();
+            if (f.ShowDialog() != DialogResult.OK)
+            {
+                return;
+            }
+            string user = f.User;
+            string pass = f.Pass;
+
+            GoogleContactDownloader gcd = new GoogleContactDownloader();
+            gcd.Authenticate(user, pass);
+            OContactManager ocm = new OContactManager(this.Application);
+            ContactMerger.Merge(gcd, ocm, gcd.GetContacts(), ocm.GetContacts());
         }
         private void ThisAddIn_Shutdown(object sender, System.EventArgs e)
         {
@@ -106,7 +118,7 @@ namespace GContactSync
             } 
         }
 
-        public override bool addMail(string mail)
+        protected override bool internal_addMail(string mail)
         {
             if (mail.Equals(_item.Email1Address) || mail.Equals(_item.Email2Address) || mail.Equals(_item.Email3Address))
             {
@@ -135,9 +147,10 @@ namespace GContactSync
 
         public override void Update()
         {
-            _item.Save();
+            if (ContainsSomeInformation()) {
+                _item.Save();
+            }
         }
-
 
     }
 

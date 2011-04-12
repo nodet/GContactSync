@@ -32,9 +32,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Google.GData.AccessControl, Version=1.7.0.1, Culture=neutral, PublicKeyToken=b4b8eb9a7afc8328, processorArchitecture=MSIL" />
-    <Reference Include="Google.GData.Client, Version=1.7.0.1, Culture=neutral, PublicKeyToken=04a59ca9b0273830, processorArchitecture=MSIL" />
-    <Reference Include="Google.GData.Contacts, Version=1.7.0.1, Culture=neutral, PublicKeyToken=7e065189dd4b982f, processorArchitecture=MSIL" />
-    <Reference Include="Google.GData.Extensions, Version=1.7.0.1, Culture=neutral, PublicKeyToken=0b4c5df2ebf20876, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -55,6 +52,20 @@
     <Compile Include="IContact.cs" />
     <Compile Include="IContactManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="C:\Documents and Settings\Administrator\My Documents\Google Data API SDK\Sources\Library\core\Core Client.csproj">
+      <Project>{B6F6D938-0D45-42BA-8A67-55D92EF03995}</Project>
+      <Name>Core Client</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Documents and Settings\Administrator\My Documents\Google Data API SDK\Sources\Library\extensions\Common Data Extensions.csproj">
+      <Project>{21BCB644-F9C3-4ADC-8BE1-4E55C6565011}</Project>
+      <Name>Common Data Extensions</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\Documents and Settings\Administrator\My Documents\Google Data API SDK\Sources\Library\gcontacts\Contacts.csproj">
+      <Project>{66B2AD47-7DD2-43E5-9124-D53486609992}</Project>
+      <Name>Contacts</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

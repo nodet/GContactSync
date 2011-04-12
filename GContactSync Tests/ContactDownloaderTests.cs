@@ -139,12 +139,67 @@ namespace GContactSync_Tests
         //[TestMethod]
         public void TestCreateAGoogleContact()
         {
-            RequestSettings rs = new RequestSettings("GContactSync", "xavier.nodet@gmail.com", "");
             GContactSync.Contact c = new GContactSync.Contact("John Doe");
-            GContact gc = new GContact(rs, c);
+            //c.addMail("john@doe.com");
+
+            GoogleContactDownloader gcd = new GoogleContactDownloader();
+            gcd.Authenticate("xavier.nodet@gmail.com", "");
+            IContact gc = gcd.NewContact(c);
             gc.Update();
         }
 
+        //[TestMethod]
+        public void TestTheGoogleWay()
+        {
+            try {
+                RequestSettings rs = new RequestSettings("GContactSync", "xavier.nodet@gmail.com", "");
+                ContactsRequest cr = new ContactsRequest(rs);
+
+                Google.Contacts.Contact entry = new Google.Contacts.Contact();
+                entry.Name = new Name();
+                entry.Name.FullName = "John Doe";
+                entry.Emails.Add(new EMail("john@doe.com", ContactsRelationships.IsOther));
+                Uri feedUri = new Uri(ContactsQuery.CreateContactsUri("default"));
+                cr.Insert(feedUri, entry);
+            } 
+            //catch (GDataRequestException ex) {
+            //    throw ex;
+            //}
+            catch  (System.Exception ex) {
+                throw ex;
+            }
+        }
+
+        //[TestMethod]
+        public void testMergeWithGoogle()
+        {
+            try
+            {
+                GoogleContactDownloader gcd = new GoogleContactDownloader();
+                gcd.Authenticate("xavier.nodet@gmail.com", "");
+
+                IContact c1 = new GContactSync.Contact("John Doe", "john@doe.com");
+                IContactManager m1 = new MockContactManager
+                {
+                    GetContactsImpl = () =>
+                    {
+                        var l = new List<IContact>();
+                        l.Add(c1);
+                        return l;
+                    }
+
+                };
+                IEnumerable<IContact> googleContacts = gcd.GetContacts();
+                googleContacts = googleContacts.Where(c => c.FullName != null && c.FullName.Contains("Doe"));
+
+                ContactMerger.Merge(gcd, m1, googleContacts, m1.GetContacts());
+            }
+            catch (System.Exception ex)
+            {
+                throw ex;
+            }
+
+        }
 
     }
 
