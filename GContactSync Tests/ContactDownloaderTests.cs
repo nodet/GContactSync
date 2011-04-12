@@ -66,17 +66,6 @@ namespace GContactSync_Tests
         #endregion
 
         [TestMethod]
-        public void TestAuthenticateCanSucceed()
-        {
-            IContactManager cd = new MockContactManager
-            {
-                AuthenticateImpl = (u, p) => true
-            };
-            Assert.IsTrue(cd.Authenticate("john@doe.com", "password"));
-        }
-
-
-        [TestMethod]
         public void TestGetEmptyListOfContacts()
         {
             IContactManager cd = new MockContactManager
@@ -111,8 +100,7 @@ namespace GContactSync_Tests
         //[TestMethod]
         public void TestGetRealListOfContacts()
         {
-            IContactManager cd = new GoogleContactDownloader();
-            cd.Authenticate("xavier.nodet@gmail.com", "");
+            IContactManager cd = new GoogleContactDownloader("xavier.nodet@gmail.com", "");
             //IContactDownloader cd = new MockContactDownloader
             //{
             //    GetContactsImpl = () =>
@@ -142,8 +130,7 @@ namespace GContactSync_Tests
             GContactSync.Contact c = new GContactSync.Contact("John Doe");
             //c.addMail("john@doe.com");
 
-            GoogleContactDownloader gcd = new GoogleContactDownloader();
-            gcd.Authenticate("xavier.nodet@gmail.com", "");
+            GoogleContactDownloader gcd = new GoogleContactDownloader("xavier.nodet@gmail.com", "");
             IContact gc = gcd.NewContact(c);
             gc.Update();
         }
@@ -175,8 +162,7 @@ namespace GContactSync_Tests
         {
             try
             {
-                GoogleContactDownloader gcd = new GoogleContactDownloader();
-                gcd.Authenticate("xavier.nodet@gmail.com", "");
+                GoogleContactDownloader gcd = new GoogleContactDownloader("xavier.nodet@gmail.com", "");
 
                 IContact c1 = new GContactSync.Contact("John Doe", "john@doe.com");
                 IContactManager m1 = new MockContactManager

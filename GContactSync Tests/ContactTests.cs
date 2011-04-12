@@ -189,5 +189,14 @@ namespace GContactSync_Tests
             Assert.AreEqual(c1.Emails.Count(), 0);
         }
 
+        [TestMethod]
+        public void TestContactToString()
+        {
+            Assert.AreNotEqual(new Contact("").ToString(), "");
+            Assert.AreEqual(new Contact("John Doe").ToString(), "John Doe");
+            Assert.AreEqual(new Contact("", "john@doe.com").ToString(), "john@doe.com");
+        }
+
+
     }
 }

@@ -8,7 +8,6 @@ namespace GContactSync
 {
     public interface IContactManager
     {
-        bool Authenticate(string user, string pass);
         IEnumerable<IContact> GetContacts();
         IContact NewContact(IContact other);
     }

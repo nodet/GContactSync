@@ -82,17 +82,24 @@ namespace GContactSync
 
         public override void Update()
         {
-            ContactsRequest cr = new ContactsRequest(_rs);
-            if (_alreadyExistsOnGoogle)
+            try
             {
-                //System.Windows.Forms.MessageBox.Show("Updating " + FullName + " on Google");
-                cr.Update(_item);
+                ContactsRequest cr = new ContactsRequest(_rs);
+                if (_alreadyExistsOnGoogle)
+                {
+                    //System.Windows.Forms.MessageBox.Show("Updating " + this.ToString() + " on Google");
+                    cr.Update(_item);
+                }
+                else
+                {
+                    //System.Windows.Forms.MessageBox.Show("Inserting " + this.ToString() + " into Google");
+                    Uri feedUri = new Uri(ContactsQuery.CreateContactsUri("default"));
+                    cr.Insert(feedUri, _item);
+                }
             }
-            else
+            catch (GDataRequestException ex)
             {
-                //System.Windows.Forms.MessageBox.Show("Inserting " + FullName + " into Google");
-                Uri feedUri = new Uri(ContactsQuery.CreateContactsUri("default"));
-                cr.Insert(feedUri, _item);
+                System.Windows.Forms.MessageBox.Show("GDataRequestException while saving data for " + this.ToString() + ": " + ex.ResponseString);
             }
         }
 

@@ -14,10 +14,6 @@ namespace GContactSync
                 GetAllContactsAndMergeThem();
             }
             // Not re-throwing: it seems to disable the addin
-            catch (GDataRequestException ex)
-            {
-                System.Windows.Forms.MessageBox.Show("GDataRequestException: " + ex.ResponseString);
-            }
             catch (System.Exception ex)
             {
                 System.Windows.Forms.MessageBox.Show("Exception: " + ex);
@@ -34,8 +30,7 @@ namespace GContactSync
             string user = f.User;
             string pass = f.Pass;
 
-            GoogleContactDownloader gcd = new GoogleContactDownloader();
-            gcd.Authenticate(user, pass);
+            GoogleContactDownloader gcd = new GoogleContactDownloader(user, pass);
             OContactManager ocm = new OContactManager(this.Application);
             ContactMerger.Merge(gcd, ocm, gcd.GetContacts(), ocm.GetContacts());
         }
@@ -159,10 +154,6 @@ namespace GContactSync
         private Outlook.Application _application;
         public OContactManager(Outlook.Application app) {
             _application = app;
-        }
-
-        public bool Authenticate(string user, string pass) {
-            return true;
         }
 
         public IEnumerable<IContact> GetContacts() {

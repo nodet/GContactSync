@@ -10,14 +10,15 @@ namespace GContactSync
         private string _user;
         private string _pass;
 
-        public bool Authenticate(string user, string pass) {
-            _user = user;
-            _pass = pass;
-            return Authenticate();
+        public GoogleContactDownloader(string user, string pass)
+        {
+            Authenticate(user, pass);
         }
 
-        public bool Authenticate()
+        public bool Authenticate(string user, string pass)
         {
+            _user = user;
+            _pass = pass;
             _rs = new RequestSettings("GContactSync", _user, _pass);
             // AutoPaging results in automatic paging in order to retrieve all contacts
             _rs.AutoPaging = true;

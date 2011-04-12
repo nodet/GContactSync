@@ -7,6 +7,23 @@ namespace GContactSync
 {
     public abstract class ContactBase : IContact
     {
+        public override string ToString() {
+            if (string.IsNullOrEmpty(FullName))
+            {
+                if (Emails.Count() > 0)
+                {
+                    return Emails.ElementAt(0);
+                }
+                else
+                {
+                    return "[Empty contact]";
+                }
+            } 
+            else
+            {
+                return FullName;
+            }
+        }
 
         // The API that this class does not implement itself
         public abstract string FullName { get; set; }
