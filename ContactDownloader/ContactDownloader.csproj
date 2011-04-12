@@ -50,6 +50,7 @@
     <Compile Include="Contact.cs" />
     <Compile Include="ContactBase.cs" />
     <Compile Include="ContactMerger.cs" />
+    <Compile Include="GContact.cs" />
     <Compile Include="GoogleContactDownloader.cs" />
     <Compile Include="IContact.cs" />
     <Compile Include="IContactManager.cs" />
