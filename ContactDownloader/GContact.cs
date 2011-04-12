@@ -16,7 +16,7 @@ namespace GContactSync
 
         public GContact(RequestSettings rs, IContact other)
         {
-            //System.Windows.Forms.MessageBox.Show("Creating a new Google contact for " + other.FullName + " in memory");
+            //System.Windows.Forms.MessageBox.Show("Creating a new Google contact for " + other.ToString() + " in memory");
             _rs = rs;
             _item = new Google.Contacts.Contact();
             _item.AtomEntry = new Google.GData.Contacts.ContactEntry();
@@ -70,7 +70,7 @@ namespace GContactSync
             {
                 return false;
             }
-            //System.Windows.Forms.MessageBox.Show("Adding " + mail + " as an email address for " + FullName + ".");
+            //System.Windows.Forms.MessageBox.Show("Adding " + mail + " as an email address for " + this.ToString() + ".");
             EMail theMail = new EMail(mail, ContactsRelationships.IsOther);
             if (_item.Emails.Count() == 0)
             {

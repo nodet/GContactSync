@@ -97,49 +97,26 @@ namespace GContactSync_Tests
         }
 
 
-        //[TestMethod]
-        public void TestGetRealListOfContacts()
-        {
-            IContactManager cd = new GoogleContactDownloader("xavier.nodet@gmail.com", "");
-            //IContactDownloader cd = new MockContactDownloader
-            //{
-            //    GetContactsImpl = () =>
-            //    {
-            //        var l = new List<IContact>();
-            //        l.Add(new Contact("John Doe"));
-            //        return l;
-            //    }
-
-            //};
-
-            int nbContact = 0;
-            int nbMails = 0;
-            foreach (IContact c in cd.GetContacts()) {
-                nbContact++;
-                foreach (string m in c.Emails) {
-                    nbMails++;
-                }
-            }
-            System.Windows.Forms.MessageBox.Show("You have " + nbContact + " contacts totalling " + nbMails + " email addresses.");
-        }
-
-
-        //[TestMethod]
+        [TestMethod]
         public void TestCreateAGoogleContact()
         {
             GContactSync.Contact c = new GContactSync.Contact("John Doe");
-            //c.addMail("john@doe.com");
+            c.addMail("john@doe.com");
 
-            GoogleContactDownloader gcd = new GoogleContactDownloader("xavier.nodet@gmail.com", "");
+            GoogleContactDownloader gcd = new GoogleContactDownloader("gcontactsync.test@gmail.com", "gcontactsync.pass");
+            int oldCount = gcd.GetContacts().Count();
+
             IContact gc = gcd.NewContact(c);
             gc.Update();
+
+            Assert.AreEqual(gcd.GetContacts().Count(), oldCount + 1);
         }
 
-        //[TestMethod]
+        [TestMethod]
         public void TestTheGoogleWay()
         {
             try {
-                RequestSettings rs = new RequestSettings("GContactSync", "xavier.nodet@gmail.com", "");
+                RequestSettings rs = new RequestSettings("GContactSync", "gcontactsync.test@gmail.com", "gcontactsync.pass");
                 ContactsRequest cr = new ContactsRequest(rs);
 
                 Google.Contacts.Contact entry = new Google.Contacts.Contact();
@@ -157,12 +134,12 @@ namespace GContactSync_Tests
             }
         }
 
-        //[TestMethod]
+        [TestMethod]
         public void testMergeWithGoogle()
         {
             try
             {
-                GoogleContactDownloader gcd = new GoogleContactDownloader("xavier.nodet@gmail.com", "");
+                GoogleContactDownloader gcd = new GoogleContactDownloader("gcontactsync.test@gmail.com", "gcontactsync.pass");
 
                 IContact c1 = new GContactSync.Contact("John Doe", "john@doe.com");
                 IContactManager m1 = new MockContactManager
