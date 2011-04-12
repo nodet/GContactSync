@@ -5,109 +5,41 @@ using System.Text;
 
 namespace GContactSync
 {
-    public abstract class IContact
+    public interface IContact
     {
-        public abstract string FullName { get; set; }
-        public abstract IEnumerable<string> Emails {get;}
-        public abstract bool addMail(string mail);
-        protected abstract bool internal_addMail(string mail);
+        string FullName { get; set; }
+        IEnumerable<string> Emails {get;}
+
+        /// <summary>
+        /// Adds an email address to the contact.
+        /// </summary>
+        /// <param name="mail"></param>
+        /// <returns>true if the address was not already in the contact information.</returns>
+        bool addMail(string mail);
 
         /// <summary>
         /// Returns true if the two contacts should be considered to represent the same entity (and thus be merged)
         /// </summary>
         /// <param name="other"></param>
         /// <returns></returns>
-        public abstract bool IsSameAs(IContact other);
+        bool IsSameAs(IContact other);
 
         /// <summary>
         /// Copies the information from one contact to another
         /// </summary>
         /// <param name="other">The source from which the information is copied</param>
         /// <returns>true if some information was actually copied</returns>
-        public abstract bool MergeFrom(IContact other);
+        bool MergeFrom(IContact other);
 
         /// <summary>
         /// Returns true if and only if the contact contains at least a name or an email address
         /// </summary>
         /// <returns></returns>
-        public abstract bool ContainsSomeInformation();
+        bool ContainsSomeInformation();
 
         /// <summary>
         /// Saves the contact information back to the store
         /// </summary>
-        public abstract void Update();
-    }
-
-    public abstract class ContactBase : IContact {
-        public override bool addMail(string mail)
-        {
-            if (string.IsNullOrEmpty(mail))
-            {
-                return false;
-            }
-            return internal_addMail(mail);
-        }
-        public override bool IsSameAs(IContact other)
-        {
-            return (FullName != null && FullName.Equals(other.FullName)) || Emails.Intersect(other.Emails).GetEnumerator().MoveNext();
-        }
-        public override bool MergeFrom(IContact other)
-        {
-            bool didSomething = false;
-            if (string.IsNullOrEmpty(FullName))
-            {
-                FullName = other.FullName;
-                didSomething = true;
-            }
-            if (other.Emails != null)
-            {
-                foreach (string email in other.Emails)
-                {
-                    didSomething |= addMail(email);
-                }
-            }
-            return didSomething;
-        }
-        public override bool ContainsSomeInformation()
-        {
-            return !string.IsNullOrEmpty(FullName) || (Emails.Count() > 0);
-        }
-    }
-
-    public class Contact : ContactBase
-    {
-        private string _fullName;
-        public override string FullName { get { return _fullName; } set { _fullName = value; } }
-
-        private HashSet<string> EmailList = new HashSet<string>();
-        public override IEnumerable<string> Emails { get { return EmailList; } }
-
-        public Contact(string name)
-        {
-            FullName = name;
-        }
-        public Contact(string name, string mail)
-        {
-            FullName = name;
-            addMail(mail);
-        }
-        public Contact(IContact other)
-        {
-            FullName = other.FullName;
-            foreach (string email in other.Emails)
-            {
-                addMail(email);
-            }
-        }
-
-        protected override bool internal_addMail(string mail)
-        {
-            return EmailList.Add(mail);
-        }
-
-        public override void Update()
-        {
-            // noop
-        }
+        void Update();
     }
 }
