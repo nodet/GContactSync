@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Xml.Linq;
+﻿using System.Collections.Generic;
 using System.Windows.Forms;
 using Outlook = Microsoft.Office.Interop.Outlook;
-using Office = Microsoft.Office.Core;
+using Google.GData.Client;
 
 namespace GContactSync
 {
@@ -17,10 +13,14 @@ namespace GContactSync
             {
                 GetAllContactsAndMergeThem();
             }
+            // Not re-throwing: it seems to disable the addin
+            catch (GDataRequestException ex)
+            {
+                System.Windows.Forms.MessageBox.Show("GDataRequestException: " + ex.ResponseString);
+            }
             catch (System.Exception ex)
             {
                 System.Windows.Forms.MessageBox.Show("Exception: " + ex);
-                // Not re-throwing: it seems to disable the addin
             }
         }
 

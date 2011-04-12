@@ -213,6 +213,10 @@
       <Project>{114A8864-9F71-4125-92CE-95208F0A6184}</Project>
       <Name>ContactDownloader</Name>
     </ProjectReference>
+    <ProjectReference Include="C:\Documents and Settings\Administrator\My Documents\Google Data API SDK\Sources\Library\core\Core Client.csproj">
+      <Project>{B6F6D938-0D45-42BA-8A67-55D92EF03995}</Project>
+      <Name>Core Client</Name>
+    </ProjectReference>
   </ItemGroup>
   <!-- Include the build rules for a C# project. -->
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
