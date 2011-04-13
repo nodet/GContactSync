@@ -38,25 +38,6 @@ namespace GContactSync
         {
         }
 
-        private void AccessContacts(string findLastName)
-        {
-            Outlook.MAPIFolder folderContacts = this.Application.ActiveExplorer().Session.
-                GetDefaultFolder(Outlook.OlDefaultFolders.olFolderContacts);
-            Outlook.Items searchFolder = folderContacts.Items;
-            int counter = 0;
-            foreach (Outlook.ContactItem foundContact in searchFolder)
-            {
-                if (foundContact.LastName.Contains(findLastName))
-                {
-                    //foundContact.Display(false);
-                    counter = counter + 1;
-                }
-            }
-            System.Windows.Forms.MessageBox.Show("You have " + counter +
-                " contacts with last names that contain "
-                + findLastName + ".");
-        }
-
         #region VSTO generated code
 
         /// <summary>
