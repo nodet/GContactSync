@@ -51,7 +51,9 @@ namespace GContactSync
 
             GoogleContactDownloader gcd = new GoogleContactDownloader(user, pass);
             OContactManager ocm = new OContactManager(this.Application);
+            System.Windows.Forms.MessageBox.Show("Starting merge...");
             ContactMerger.Merge(gcd, ocm, gcd.GetContacts(), ocm.GetContacts());
+            System.Windows.Forms.MessageBox.Show("Done!");
         }
 
     }

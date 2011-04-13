@@ -146,5 +146,41 @@ namespace GContactSync_Tests
             Assert.IsTrue(c1.Emails.Contains("j@doe.com"));
         }
 
+
+        [TestMethod]
+        public void TestContactIndexerFindsExistingContacts()
+        {
+            List<IContact> contacts = new List<IContact>();
+            contacts.Add(new Contact("John Doe"));
+            contacts.Add(new Contact("Another contact"));
+            contacts.Add(new Contact("", "j@doe.com"));
+            contacts.Add(new Contact("", "j@doe.com"));
+            contacts.Add(new Contact((string)null));
+
+            IContact c = new Contact("MultiMail");
+            c.addMail("mm@foo.com");
+            c.addMail("multimail@foo.com");
+            contacts.Add(c);
+
+            ContactIndexer indexer = new ContactIndexer(contacts);
+            Assert.AreEqual(1, indexer.GetContactsFor("John Doe").Count());
+            Assert.AreEqual(0, indexer.GetContactsFor("Foo Bar").Count());
+            Assert.AreEqual(2, indexer.GetContactsFor("j@doe.com").Count());
+            Assert.AreEqual(1, indexer.GetContactsFor("MultiMail").Count());
+            Assert.AreEqual(1, indexer.GetContactsFor("mm@foo.com").Count());
+            Assert.AreEqual(1, indexer.GetContactsFor("multimail@foo.com").Count());
+            Assert.AreEqual(0, indexer.GetContactsFor(null).Count());
+
+            Assert.AreEqual(1, indexer.GetSameContactsAs(new Contact("MultiMail")).Count());
+            // Can match Name to email...
+            Assert.AreEqual(2, indexer.GetSameContactsAs(new Contact("j@doe.com")).Count());
+        }
+
+        [TestMethod]
+        public void TestMergerPerformance()
+        {
+            Assert.IsTrue(true);
+        }
+
     }
 }
