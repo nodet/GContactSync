@@ -31,21 +31,15 @@ namespace GContactSync
 
         public override string FullName
         {
-            get
-            {
-                if (_item.Name != null)
-                {
+            get {
+                if (_item.Name != null) {
                     return _item.Name.FullName;
-                }
-                else
-                {
+                } else {
                     return "";
                 }
             }
-            set
-            {
-                if (_item.Name == null)
-                {
+            set {
+                if (_item.Name == null) {
                     _item.Name = new Name();
                 }
                 _item.Name.FullName = value;
@@ -72,10 +66,6 @@ namespace GContactSync
             }
             //System.Windows.Forms.MessageBox.Show("Adding " + mail + " as an email address for " + this.ToString() + ".");
             EMail theMail = new EMail(mail, ContactsRelationships.IsOther);
-            if (_item.Emails.Count() == 0)
-            {
-                theMail.Primary = true;
-            }
             _item.Emails.Add(theMail);
             return true;
         }
