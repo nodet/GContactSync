@@ -9,7 +9,14 @@ using System.Windows.Forms;
 
 namespace GContactSync
 {
-    public partial class UserCredentials : Form
+    public interface IUserCredentials {
+        string User { get; }
+        string Pass { get; }
+        DialogResult ShowDialog();
+    }
+
+
+    public partial class UserCredentials : Form, IUserCredentials
     {
         public UserCredentials()
         {
@@ -36,4 +43,20 @@ namespace GContactSync
 
         }
     }
+
+
+    public class UserCredentialsAsker {
+        public static bool GetUserCredentials(IUserCredentials dialog, string user, string pass)
+        {
+            if (dialog.ShowDialog() != DialogResult.OK)
+            {
+                return false;
+            }
+            user = dialog.User;
+            pass = dialog.Pass;
+            return true;
+        }
+    }
+
+
 }

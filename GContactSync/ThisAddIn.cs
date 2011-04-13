@@ -44,7 +44,8 @@ namespace GContactSync
         {
             string user = null;
             string pass = null;
-            if (!GetUserCredentials(user, pass))
+            UserCredentials f = new UserCredentials();
+            if (!UserCredentialsAsker.GetUserCredentials(f, user, pass))
             {
                 return;
             }
@@ -52,18 +53,6 @@ namespace GContactSync
             GoogleContactDownloader gcd = new GoogleContactDownloader(user, pass);
             OContactManager ocm = new OContactManager(this.Application);
             ContactMerger.Merge(gcd, ocm, gcd.GetContacts(), ocm.GetContacts());
-        }
-
-        private bool GetUserCredentials(string user, string pass)
-        {
-            UserCredentials f = new UserCredentials();
-            if (f.ShowDialog() != DialogResult.OK)
-            {
-                return false;
-            }
-            user = f.User;
-            pass = f.Pass;
-            return true;
         }
 
     }

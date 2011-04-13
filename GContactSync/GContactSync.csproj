@@ -177,9 +177,6 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="UserCredentials.resx">
-      <DependentUpon>UserCredentials.cs</DependentUpon>
-    </EmbeddedResource>
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
@@ -201,12 +198,6 @@
     </None>
     <Compile Include="ThisAddIn.Designer.cs">
       <DependentUpon>ThisAddIn.Designer.xml</DependentUpon>
-    </Compile>
-    <Compile Include="UserCredentials.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UserCredentials.Designer.cs">
-      <DependentUpon>UserCredentials.cs</DependentUpon>
     </Compile>
     <AppDesigner Include="Properties\" />
   </ItemGroup>
