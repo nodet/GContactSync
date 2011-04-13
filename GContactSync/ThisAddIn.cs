@@ -7,6 +7,22 @@ namespace GContactSync
 {
     public partial class ThisAddIn
     {
+        #region VSTO generated code
+
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
+        private void InternalStartup()
+        {
+            this.Startup += new System.EventHandler(ThisAddIn_Startup);
+            this.Shutdown += new System.EventHandler(ThisAddIn_Shutdown);
+        }
+
+
+
+        #endregion
+
         private void ThisAddIn_Startup(object sender, System.EventArgs e)
         {
             try
@@ -20,37 +36,35 @@ namespace GContactSync
             }
         }
 
+        private void ThisAddIn_Shutdown(object sender, System.EventArgs e)
+        {
+        }
+
         private void GetAllContactsAndMergeThem()
         {
-            UserCredentials f = new UserCredentials();
-            if (f.ShowDialog() != DialogResult.OK)
+            string user = null;
+            string pass = null;
+            if (!GetUserCredentials(user, pass))
             {
                 return;
             }
-            string user = f.User;
-            string pass = f.Pass;
 
             GoogleContactDownloader gcd = new GoogleContactDownloader(user, pass);
             OContactManager ocm = new OContactManager(this.Application);
             ContactMerger.Merge(gcd, ocm, gcd.GetContacts(), ocm.GetContacts());
         }
-        private void ThisAddIn_Shutdown(object sender, System.EventArgs e)
-        {
-        }
 
-        #region VSTO generated code
-
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
-        private void InternalStartup()
+        private bool GetUserCredentials(string user, string pass)
         {
-            this.Startup += new System.EventHandler(ThisAddIn_Startup);
-            this.Shutdown += new System.EventHandler(ThisAddIn_Shutdown);
+            UserCredentials f = new UserCredentials();
+            if (f.ShowDialog() != DialogResult.OK)
+            {
+                return false;
+            }
+            user = f.User;
+            pass = f.Pass;
+            return true;
         }
-        
-        #endregion
 
     }
 
