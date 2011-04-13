@@ -45,6 +45,7 @@
     <Compile Include="ContactMergerTests.cs" />
     <Compile Include="ContactTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UserCredentialsAskerTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="AuthoringTests.txt" />

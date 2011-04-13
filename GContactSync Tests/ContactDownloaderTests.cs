@@ -1,14 +1,12 @@
 ﻿using System;
-using System.Text;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using GContactSync;
-
-using Google.GData.Client;
-using Google.GData.Extensions;
-using Google.GData.Contacts;
 using Google.Contacts;
+using Google.GData.Client;
+using Google.GData.Contacts;
+using Google.GData.Extensions;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace GContactSync_Tests
 {
@@ -103,7 +101,7 @@ namespace GContactSync_Tests
             GContactSync.Contact c = new GContactSync.Contact("John Doe");
             c.addMail("john@doe.com");
 
-            GoogleContactDownloader gcd = new GoogleContactDownloader("gcontactsync.test@gmail.com", "gcontactsync.pass");
+            GoogleContactDownloader gcd = new GoogleContactDownloader(GoogleContactDownloader.TestUser, GoogleContactDownloader.TestPass);
             int oldCount = gcd.GetContacts().Count();
 
             IContact gc = gcd.NewContact(c);
@@ -116,7 +114,7 @@ namespace GContactSync_Tests
         public void TestTheGoogleWay()
         {
             try {
-                RequestSettings rs = new RequestSettings("GContactSync", "gcontactsync.test@gmail.com", "gcontactsync.pass");
+                RequestSettings rs = new RequestSettings("GContactSync", GoogleContactDownloader.TestUser, GoogleContactDownloader.TestPass);
                 ContactsRequest cr = new ContactsRequest(rs);
 
                 Google.Contacts.Contact entry = new Google.Contacts.Contact();
@@ -139,7 +137,7 @@ namespace GContactSync_Tests
         {
             try
             {
-                GoogleContactDownloader gcd = new GoogleContactDownloader("gcontactsync.test@gmail.com", "gcontactsync.pass");
+                GoogleContactDownloader gcd = new GoogleContactDownloader(GoogleContactDownloader.TestUser, GoogleContactDownloader.TestPass);
 
                 IContact c1 = new GContactSync.Contact("John Doe", "john@doe.com");
                 IContactManager m1 = new MockContactManager

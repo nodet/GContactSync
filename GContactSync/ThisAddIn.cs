@@ -42,11 +42,10 @@ namespace GContactSync
 
         private void GetAllContactsAndMergeThem()
         {
-            string user = null;
-            string pass = null;
-            UserCredentials f = new UserCredentials();
-            if (!UserCredentialsAsker.GetUserCredentials(f, user, pass))
-            {
+            string user;
+            string pass;
+            UserCredentials dialog = new UserCredentials();
+            if (!UserCredentialsAsker.GetUserCredentials(dialog, out user, out pass)) {
                 return;
             }
 

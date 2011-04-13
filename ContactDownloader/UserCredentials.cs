@@ -46,10 +46,12 @@ namespace GContactSync
 
 
     public class UserCredentialsAsker {
-        public static bool GetUserCredentials(IUserCredentials dialog, string user, string pass)
+        public static bool GetUserCredentials(IUserCredentials dialog, out string user, out string pass)
         {
             if (dialog.ShowDialog() != DialogResult.OK)
             {
+                user = null;
+                pass = null;
                 return false;
             }
             user = dialog.User;

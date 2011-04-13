@@ -6,6 +6,9 @@ namespace GContactSync
 {
     public class GoogleContactDownloader : IContactManager
     {
+        public const string TestUser = "gcontactsync.test@gmail.com";
+        public const string TestPass = "gcontactsync.pass";
+
         private RequestSettings _rs = null;
         private string _user;
         private string _pass;
@@ -15,7 +18,7 @@ namespace GContactSync
             Authenticate(user, pass);
         }
 
-        public bool Authenticate(string user, string pass)
+        private bool Authenticate(string user, string pass)
         {
             _user = user;
             _pass = pass;
@@ -28,8 +31,8 @@ namespace GContactSync
         public IEnumerable<IContact> GetContacts()
         {
             ContactsRequest cr = new ContactsRequest(_rs);
+            //cr.Service.RequestFactory = new GDataLoggingRequestFactory(cr.Service.ServiceIdentifier, "GContactSync");
             Feed<Google.Contacts.Contact> feed = cr.GetContacts();
-
             List<IContact> list = new List<IContact>();
             foreach (Google.Contacts.Contact gContact in feed.Entries)
             {
