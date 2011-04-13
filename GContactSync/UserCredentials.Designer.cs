@@ -113,7 +113,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
-            this.ClientSize = new System.Drawing.Size(261, 116);
+            this.ClientSize = new System.Drawing.Size(261, 111);
             this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.buttonOk);
             this.Controls.Add(this.label3);
@@ -121,8 +121,9 @@
             this.Controls.Add(this.label2);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.label1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Name = "UserCredentials";
-            this.Text = "GOutlookSync";
+            this.Text = "GContactSync";
             this.Load += new System.EventHandler(this.UserCredentials_Load);
             this.ResumeLayout(false);
             this.PerformLayout();

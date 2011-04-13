@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("ContactDownloader")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("IBM")]
+[assembly: AssemblyCompany("Xavier Nodet")]
 [assembly: AssemblyProduct("ContactDownloader")]
-[assembly: AssemblyCopyright("Copyright © IBM 2011")]
+[assembly: AssemblyCopyright("Copyright © Xavier Nodet 2011")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

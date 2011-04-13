@@ -9,9 +9,9 @@ using System.Security;
 [assembly: AssemblyTitle("GContactSync")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("IBM")]
+[assembly: AssemblyCompany("Xavier Nodet")]
 [assembly: AssemblyProduct("GContactSync")]
-[assembly: AssemblyCopyright("Copyright © IBM 2011")]
+[assembly: AssemblyCopyright("Copyright © Xavier Nodet 2011")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
