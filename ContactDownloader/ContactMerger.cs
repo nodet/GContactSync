@@ -68,23 +68,23 @@ namespace GContactSync
                     foundMerge = true;
                     if (c.MergeFrom(oc))
                     {
-                        //System.Windows.Forms.MessageBox.Show("Updating Google information for " + c.FullName);
+                        //System.Windows.Forms.MessageBox.Show("Updating Google information for " + c.ToString());
                         c.Update();
                     }
                     if (oc.MergeFrom(c))
                     {
-                        //System.Windows.Forms.MessageBox.Show("Updating Outlook information for " + c.FullName);
+                        //System.Windows.Forms.MessageBox.Show("Updating Outlook information for " + c.ToString());
                         oc.Update();
                     }
                 }
                 if (!foundMerge)
                 {
-                    //System.Windows.Forms.MessageBox.Show("Copy information from Google to Outlook for " + c.FullName);
+                    //System.Windows.Forms.MessageBox.Show("Copy information from Google to Outlook for " + c.ToString());
                     IContact newContact = m2.NewContact(c);
                     newContact.Update();
                 }
             }
-
+            
             var l1Index = new ContactIndexer(l1);
             foreach (IContact oc in l2)
             {
@@ -96,7 +96,7 @@ namespace GContactSync
                 }
                 if (!foundMerge)
                 {
-                    //System.Windows.Forms.MessageBox.Show("Copy information from Outlook to Google for " + oc.FullName);
+                    //System.Windows.Forms.MessageBox.Show("Copy information from Outlook to Google for " + oc.ToString());
                     IContact newContact = m1.NewContact(oc);
                     newContact.Update();
                 }

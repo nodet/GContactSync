@@ -179,8 +179,46 @@ namespace GContactSync_Tests
         [TestMethod]
         public void TestMergerPerformance()
         {
-            Assert.IsTrue(true);
+            // Runtime should be pretty negligible, around 0.1s
+            const int nb = 5000;
+            List<IContact> l1 = new List<IContact>();
+            List<IContact> l2 = new List<IContact>();
+            for (int i = 0; i < nb; ++i)
+            {
+                string s1 = Guid.NewGuid().ToString();
+                string s2 = Guid.NewGuid().ToString();
+                string s3 = Guid.NewGuid().ToString();
+                IContact c1 = new Contact(s1);
+                c1.addMail(s2);
+                c1.addMail(s3);
+                l1.Add(c1);
+                IContact c2 = new Contact(s1);
+                c2.addMail(s2);
+                c2.addMail(s3);
+                l2.Add(c2);
+            }
+            IContactManager m1 = new MockContactManager
+            {
+                GetContactsImpl = () => { return l1; }
+            };
+            IContactManager m2 = new MockContactManager
+            {
+                GetContactsImpl = () => { return l2; }
+            };
+            ContactMerger.Merge(m1, m2, m1.GetContacts(), m2.GetContacts());
         }
+
+
+        [TestMethod]
+        public void TestWithNullNameAndSameMailIsNoop()
+        {
+            Contact c1 = new Contact("", "j@doe.com");
+            Contact c2 = new Contact(null, "j@doe.com");
+            Assert.IsFalse(c1.MergeFrom(c2));
+            Assert.IsFalse(c2.MergeFrom(c1));
+        }
+
+
 
     }
 }

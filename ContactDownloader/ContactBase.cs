@@ -52,7 +52,7 @@ namespace GContactSync
         public bool MergeFrom(IContact other)
         {
             bool didSomething = false;
-            if (string.IsNullOrEmpty(FullName))
+            if (string.IsNullOrEmpty(FullName) && !string.IsNullOrEmpty(other.FullName))
             {
                 FullName = other.FullName;
                 didSomething = true;

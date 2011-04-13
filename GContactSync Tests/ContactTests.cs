@@ -88,6 +88,16 @@ namespace GContactSync_Tests
         }
 
         [TestMethod]
+        public void TestTwoContactsWithNullNamesAndSameEmailAreEqual()
+        {
+            string mail = "john@doe.com";
+            IContact c1 = new Contact(null, mail);
+            IContact c2 = new Contact("", mail);
+            Assert.IsTrue(c1.IsSameAs(c2));
+            Assert.IsTrue(c2.IsSameAs(c1));
+        }
+
+        [TestMethod]
         public void TestTwoContactsWithSameEmailAreEqualEvenWithDifferentNames()
         {
             IContact c1 = new Contact("J. Doe", "john@doe.com");
